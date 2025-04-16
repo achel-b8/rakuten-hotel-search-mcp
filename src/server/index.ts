@@ -37,7 +37,7 @@ class RakutenHotelServer {
 
     // エラーハンドリング
     this.server.onerror = (error) => console.error('[MCP Error]', error);
-    
+
     process.on('SIGINT', async () => {
       await this.server.close();
       process.exit(0);

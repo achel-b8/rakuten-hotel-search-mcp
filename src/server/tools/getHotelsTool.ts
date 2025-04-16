@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { 
-  HotelQueryParams, 
-  HotelsResponse, 
-  Hotel, 
-  RakutenApiResponse, 
-  RoomInfo, 
-  HotelBasicInfo 
+import {
+  HotelQueryParams,
+  HotelsResponse,
+  Hotel,
+  RakutenApiResponse,
+  RoomInfo,
+  HotelBasicInfo,
 } from '../../types/index.js';
 
 // 戻り値の型を明示的に定義
@@ -195,7 +195,7 @@ function formatResponse(data: RakutenApiResponse): HotelsResponse {
           if (item.hotelBasicInfo) {
             hotelBasicInfo = item.hotelBasicInfo;
           }
-          
+
           // 部屋情報の処理
           if (item.roomInfo && Array.isArray(item.roomInfo)) {
             roomInfoList.push(...item.roomInfo);
@@ -206,16 +206,16 @@ function formatResponse(data: RakutenApiResponse): HotelsResponse {
         if (hotelBasicInfo) {
           hotels.push({
             hotelBasicInfo,
-            roomInfoList
+            roomInfoList,
           });
         }
       }
     });
   }
-  
-  return { 
+
+  return {
     hotels,
-    pagingInfo: data.pagingInfo
+    pagingInfo: data.pagingInfo,
   };
 }
 

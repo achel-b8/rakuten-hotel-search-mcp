@@ -82,10 +82,12 @@ export interface RakutenApiResponse {
     first: number; // 最初
     last: number; // 最後
   };
-  hotels: Array<Array<{
-    hotelBasicInfo?: HotelBasicInfo; // ホテル基本情報
-    roomInfo?: RoomInfo[]; // 部屋情報
-  }>>;
+  hotels: Array<
+    Array<{
+      hotelBasicInfo?: HotelBasicInfo; // ホテル基本情報
+      roomInfo?: RoomInfo[]; // 部屋情報
+    }>
+  >;
 }
 
 // ホテル検索結果レスポンス
