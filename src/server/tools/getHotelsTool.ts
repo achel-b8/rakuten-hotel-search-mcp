@@ -1,8 +1,5 @@
 import axios from 'axios';
 import { HotelQueryParams, HotelsResponse, Hotel, RakutenApiResponse } from '../../types/index';
-import { Tool } from '@modelcontextprotocol/sdk/types.js';
-
-// dotenv.config()はエントリーポイントで行うべきため削除
 
 // 戻り値の型を明示的に定義
 type ToolResponse = {
@@ -81,18 +78,18 @@ export const getHotelsTool = {
           // APIからのエラーレスポンス
           const statusCode = error.response.status;
           const errorMessage = error.response.data?.error || error.message;
-          return { 
-            error: `APIエラー (${statusCode}): ${errorMessage}` 
+          return {
+            error: `APIエラー (${statusCode}): ${errorMessage}`,
           };
         } else if (error.request) {
           // リクエストは送信されたがレスポンスがない
-          return { 
-            error: 'APIサーバーからの応答がありません。ネットワーク接続を確認してください。' 
+          return {
+            error: 'APIサーバーからの応答がありません。ネットワーク接続を確認してください。',
           };
         } else {
           // リクエスト設定中のエラー
-          return { 
-            error: `リクエスト設定エラー: ${error.message}` 
+          return {
+            error: `リクエスト設定エラー: ${error.message}`,
           };
         }
       } else if (error instanceof Error) {
