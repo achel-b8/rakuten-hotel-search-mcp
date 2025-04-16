@@ -32,6 +32,12 @@
 - 可読性を重視し、命名とコメントを適切に行う。
 - エラーメッセージはユーザーフレンドリーで明確にする。
 
+## Git/GitHub運用ルール
+- 機能実装や修正ごとに個別のブランチを作成し、PRで統合する。
+- PR前に必ずlintとテストを実行し、全チェックを通過させる。
+- コミットは小さな単位で行い、変更内容を簡潔に記述する。
+- PRには変更内容と意図を明記し、将来の参照資料となるようにする。
+
 ## 情報源
 - MCP（Model Context Protocol）: https://modelcontextprotocol.io/introduction
 - 楽天トラベル空室検索API仕様: https://webservice.rakuten.co.jp/documentation/vacant-hotel-search
