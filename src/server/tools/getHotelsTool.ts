@@ -182,9 +182,6 @@ function buildRequestParams(
 function formatResponse(data: RakutenApiResponse): HotelsResponse {
   const hotels: Hotel[] = [];
 
-  // デバッグログ
-  console.error('API Response:', JSON.stringify(data, null, 2));
-
   if (data.hotels && Array.isArray(data.hotels)) {
     data.hotels.forEach((hotelGroup) => {
       // hotelGroupは配列
@@ -215,9 +212,6 @@ function formatResponse(data: RakutenApiResponse): HotelsResponse {
       }
     });
   }
-
-  // デバッグログ
-  console.error('Formatted Response:', JSON.stringify({ hotels, pagingInfo: data.pagingInfo }, null, 2));
   
   return { 
     hotels,
