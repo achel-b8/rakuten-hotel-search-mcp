@@ -1,25 +1,14 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
 import { HotelQueryParams, HotelsResponse, Hotel, RakutenApiResponse } from '../../types/index';
+import { Tool } from '@modelcontextprotocol/sdk/types.js';
 
-interface Tool {
-  name: string;
-  description: string;
-  parameters: {
-    type: string;
-    required: string[];
-    properties: Record<
-      string,
-      {
-        type: string;
-        description: string;
-      }
-    >;
-  };
-  handler: (request: { parameters: Record<string, unknown> }) => Promise<Record<string, unknown>>;
-}
+// dotenv.config()はエントリーポイントで行うべきため削除
 
-dotenv.config();
+// 戻り値の型を明示的に定義
+type ToolResponse = {
+  result?: HotelsResponse;
+  error?: string;
+};
 
 const DEFAULT_LATITUDE = 35.6994856;
 const DEFAULT_LONGITUDE = 139.7532791;
@@ -31,10 +20,10 @@ const RAKUTEN_API_ENDPOINT =
 /**
  * getHotelsTool - 楽天トラベル空室検索APIを使用してホテル情報を取得するツール
  */
-export const getHotelsTool: Tool = {
+export const getHotelsTool = {
   name: 'getHotels',
   description: '指定された条件で周辺ホテルの空室情報を取得します。',
-  parameters: {
+  inputSchema: {
     type: 'object',
     required: ['checkIn', 'checkOut'],
     properties: {
@@ -60,7 +49,7 @@ export const getHotelsTool: Tool = {
       },
     },
   },
-  handler: async (request: { parameters: Record<string, unknown> }) => {
+  handler: async (request: { parameters: Record<string, unknown> }): Promise<ToolResponse> => {
     try {
       const params = request.parameters as unknown as HotelQueryParams;
 
@@ -86,7 +75,27 @@ export const getHotelsTool: Tool = {
         result: formattedResponse,
       };
     } catch (error) {
-      if (error instanceof Error) {
+      // エラーハンドリングの強化
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          // APIからのエラーレスポンス
+          const statusCode = error.response.status;
+          const errorMessage = error.response.data?.error || error.message;
+          return { 
+            error: `APIエラー (${statusCode}): ${errorMessage}` 
+          };
+        } else if (error.request) {
+          // リクエストは送信されたがレスポンスがない
+          return { 
+            error: 'APIサーバーからの応答がありません。ネットワーク接続を確認してください。' 
+          };
+        } else {
+          // リクエスト設定中のエラー
+          return { 
+            error: `リクエスト設定エラー: ${error.message}` 
+          };
+        }
+      } else if (error instanceof Error) {
         return { error: error.message };
       }
       return { error: '不明なエラーが発生しました。' };
