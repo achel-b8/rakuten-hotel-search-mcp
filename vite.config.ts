@@ -9,10 +9,9 @@ export default defineConfig({
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['express', '@modelcontextprotocol/sdk', 'axios', 'dotenv'],
+      external: ['@modelcontextprotocol/sdk', 'axios', 'dotenv'],
       output: {
         globals: {
-          express: 'express',
           '@modelcontextprotocol/sdk': 'mcpSdk',
           axios: 'axios',
           dotenv: 'dotenv',
