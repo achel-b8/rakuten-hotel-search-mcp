@@ -16,7 +16,7 @@ interface Tool {
       }
     >;
   };
-  handler: (request: { parameters: any }) => Promise<any>;
+  handler: (request: { parameters: Record<string, unknown> }) => Promise<Record<string, unknown>>;
 }
 
 dotenv.config();
@@ -60,9 +60,9 @@ export const getHotelsTool: Tool = {
       },
     },
   },
-  handler: async (request: { parameters: any }) => {
+  handler: async (request: { parameters: Record<string, unknown> }) => {
     try {
-      const params = request.parameters as HotelQueryParams;
+      const params = request.parameters as unknown as HotelQueryParams;
 
       validateParams(params);
 

@@ -3,7 +3,10 @@ import axios from 'axios';
 import { getHotelsTool } from './getHotelsTool';
 
 vi.mock('axios');
-const mockedAxios = axios as any;
+interface MockedAxios {
+  get: ReturnType<typeof vi.fn>;
+}
+const mockedAxios = axios as unknown as MockedAxios;
 
 vi.stubEnv('APPLICATION_ID', 'test-application-id');
 vi.stubEnv('AFFILIATE_ID', 'test-affiliate-id');
