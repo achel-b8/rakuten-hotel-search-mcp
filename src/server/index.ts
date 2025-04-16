@@ -34,7 +34,7 @@ class RakutenHotelServer {
 
     // ツールハンドラーの設定
     this.setupToolHandlers();
-    
+
     // エラーハンドリング
     this.server.onerror = (error) => console.error('[MCP Error]', error);
     process.on('SIGINT', async () => {
@@ -56,21 +56,21 @@ class RakutenHotelServer {
         const toolRequest = {
           parameters: request.params.arguments || {},
         };
-        
+
         const result = await getHotelsTool.handler(toolRequest);
-        
+
         if (result.error) {
           return {
             content: [{ type: 'text', text: result.error }],
             isError: true,
           };
         }
-        
+
         return {
           content: [{ type: 'text', text: JSON.stringify(result.result, null, 2) }],
         };
       }
-      
+
       return {
         content: [{ type: 'text', text: `Unknown tool: ${request.params.name}` }],
         isError: true,

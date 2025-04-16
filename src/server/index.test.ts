@@ -32,10 +32,10 @@ describe('RakutenHotelServer', () => {
     vi.resetModules();
     process.env = { ...originalEnv };
     process.env.APPLICATION_ID = 'test-application-id';
-    
+
     // モックをリセット
     vi.clearAllMocks();
-    
+
     // コンソールエラーをモック化して、テスト出力をクリーンに保つ
     vi.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -49,7 +49,7 @@ describe('RakutenHotelServer', () => {
   it('サーバーが正常に初期化されること', async () => {
     // index.tsをインポート（環境変数設定後に行う必要がある）
     const indexModule = await import('./index.js');
-    
+
     // Serverコンストラクタが正しいパラメータで呼ばれたことを確認
     expect(Server).toHaveBeenCalledWith(
       {
@@ -62,7 +62,7 @@ describe('RakutenHotelServer', () => {
         },
       }
     );
-    
+
     // StdioServerTransportが呼ばれたことを確認
     expect(StdioServerTransport).toHaveBeenCalled();
   });
@@ -70,18 +70,18 @@ describe('RakutenHotelServer', () => {
   it('APPLICATION_ID環境変数がない場合、エラーで終了すること', async () => {
     // APPLICATION_IDを削除
     delete process.env.APPLICATION_ID;
-    
+
     // process.exitをモック化
     const mockExit = vi.spyOn(process, 'exit').mockImplementation((code) => {
       throw new Error(`Process exit with code: ${code}`);
     });
-    
+
     // index.tsのインポートでエラーが発生することを期待
     await expect(import('./index.js')).rejects.toThrow('Process exit with code: 1');
-    
+
     // コンソールエラーが呼ばれたことを確認
     expect(console.error).toHaveBeenCalledWith('環境変数APPLICATION_IDが設定されていません。');
-    
+
     // process.exitが呼ばれたことを確認
     expect(mockExit).toHaveBeenCalledWith(1);
   });
