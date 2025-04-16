@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import axios from 'axios';
 import { getHotelsTool } from './getHotelsTool';
 import { RakutenApiResponse } from '../../types/index.js';
+import { DEFAULT_MAX_PRICE } from '../config/hotelConstants.js';
 
 vi.mock('axios');
 interface MockedAxios {
@@ -175,6 +176,191 @@ const mockApiResponseData: RakutenApiResponse = {
   ],
 };
 
+// 除外ホテルタイプのテスト用データ
+const excludedHotelMockData: RakutenApiResponse = {
+  pagingInfo: {
+    recordCount: 1,
+    pageCount: 1,
+    page: 1,
+    first: 1,
+    last: 1,
+  },
+  hotels: [
+    [
+      {
+        hotelBasicInfo: {
+          hotelNo: 100003,
+          hotelName: 'テストカプセルホテル',
+          hotelInformationUrl: 'https://example.com/hotel/100003',
+          planListUrl: 'https://example.com/hotel/100003/plans',
+          dpPlanListUrl: 'https://example.com/hotel/100003/dp_plans',
+          reviewUrl: 'https://example.com/hotel/100003/reviews',
+          hotelKanaName: 'てすとかぷせるほてる',
+          hotelSpecial: 'リーズナブルなカプセルホテル。ビジネスマンに人気です。',
+          hotelMinCharge: 3000,
+          latitude: 35.68,
+          longitude: 139.77,
+          postalCode: '100-0001',
+          address1: '東京都',
+          address2: '千代田区2-2-2',
+          telephoneNo: '03-1234-5678',
+          faxNo: '03-1234-5679',
+          access: '東京駅より徒歩8分',
+          parkingInformation: '駐車場なし',
+          nearestStation: '東京',
+          hotelImageUrl: 'https://example.com/images/hotel/100003.jpg',
+          hotelThumbnailUrl: 'https://example.com/images/hotel/thumb/100003.jpg',
+          roomImageUrl: 'https://example.com/images/room/100003.jpg',
+          roomThumbnailUrl: 'https://example.com/images/room/thumb/100003.jpg',
+          hotelMapImageUrl: 'https://example.com/images/map/100003.gif',
+          reviewCount: 500,
+          reviewAverage: 3.8,
+          userReview: 'コスパが良いです。',
+        },
+      },
+      {
+        roomInfo: [
+          {
+            roomBasicInfo: {
+              roomClass: 'cap',
+              roomName: 'カプセルルーム',
+              planId: 5000004,
+              planName: '【素泊まり】カプセルプラン',
+              pointRate: 1,
+              withDinnerFlag: 0,
+              dinnerSelectFlag: 0,
+              withBreakfastFlag: 0,
+              breakfastSelectFlag: 0,
+              payment: '1',
+              reserveUrl: 'https://example.com/reserve/100003/cap/5000004',
+              salesformFlag: 0,
+            },
+          },
+        ],
+      },
+    ],
+  ],
+};
+
+// 優先ホテルチェーンのテスト用データ
+const preferredChainMockData: RakutenApiResponse = {
+  pagingInfo: {
+    recordCount: 2,
+    pageCount: 1,
+    page: 1,
+    first: 1,
+    last: 2,
+  },
+  hotels: [
+    [
+      {
+        hotelBasicInfo: {
+          hotelNo: 100004,
+          hotelName: 'ルートイン東京',
+          hotelInformationUrl: 'https://example.com/hotel/100004',
+          planListUrl: 'https://example.com/hotel/100004/plans',
+          dpPlanListUrl: 'https://example.com/hotel/100004/dp_plans',
+          reviewUrl: 'https://example.com/hotel/100004/reviews',
+          hotelKanaName: 'るーといんとうきょう',
+          hotelSpecial: 'ビジネスホテルの定番。朝食無料サービス。',
+          hotelMinCharge: 6000,
+          latitude: 35.69,
+          longitude: 139.76,
+          postalCode: '100-0001',
+          address1: '東京都',
+          address2: '千代田区3-3-3',
+          telephoneNo: '03-1234-5678',
+          faxNo: '03-1234-5679',
+          access: '東京駅より徒歩10分',
+          parkingInformation: '有料駐車場あり',
+          nearestStation: '東京',
+          hotelImageUrl: 'https://example.com/images/hotel/100004.jpg',
+          hotelThumbnailUrl: 'https://example.com/images/hotel/thumb/100004.jpg',
+          roomImageUrl: 'https://example.com/images/room/100004.jpg',
+          roomThumbnailUrl: 'https://example.com/images/room/thumb/100004.jpg',
+          hotelMapImageUrl: 'https://example.com/images/map/100004.gif',
+          reviewCount: 800,
+          reviewAverage: 4.0,
+          userReview: '朝食が美味しいです。',
+        },
+      },
+      {
+        roomInfo: [
+          {
+            roomBasicInfo: {
+              roomClass: 'sgl',
+              roomName: 'シングルルーム',
+              planId: 5000005,
+              planName: '【朝食付き】ビジネスプラン',
+              pointRate: 1,
+              withDinnerFlag: 0,
+              dinnerSelectFlag: 0,
+              withBreakfastFlag: 1,
+              breakfastSelectFlag: 0,
+              payment: '1',
+              reserveUrl: 'https://example.com/reserve/100004/sgl/5000005',
+              salesformFlag: 0,
+            },
+          },
+        ],
+      },
+    ],
+    [
+      {
+        hotelBasicInfo: {
+          hotelNo: 100005,
+          hotelName: 'テストホテル新宿',
+          hotelInformationUrl: 'https://example.com/hotel/100005',
+          planListUrl: 'https://example.com/hotel/100005/plans',
+          dpPlanListUrl: 'https://example.com/hotel/100005/dp_plans',
+          reviewUrl: 'https://example.com/hotel/100005/reviews',
+          hotelKanaName: 'てすとほてるしんじゅく',
+          hotelSpecial: '新宿駅から徒歩5分。ビジネスにも観光にも便利。',
+          hotelMinCharge: 9000,
+          latitude: 35.69,
+          longitude: 139.7,
+          postalCode: '160-0001',
+          address1: '東京都',
+          address2: '新宿区1-1-1',
+          telephoneNo: '03-1234-5678',
+          faxNo: '03-1234-5679',
+          access: '新宿駅より徒歩5分',
+          parkingInformation: '有料駐車場あり',
+          nearestStation: '新宿',
+          hotelImageUrl: 'https://example.com/images/hotel/100005.jpg',
+          hotelThumbnailUrl: 'https://example.com/images/hotel/thumb/100005.jpg',
+          roomImageUrl: 'https://example.com/images/room/100005.jpg',
+          roomThumbnailUrl: 'https://example.com/images/room/thumb/100005.jpg',
+          hotelMapImageUrl: 'https://example.com/images/map/100005.gif',
+          reviewCount: 700,
+          reviewAverage: 4.1,
+          userReview: '立地が良いです。',
+        },
+      },
+      {
+        roomInfo: [
+          {
+            roomBasicInfo: {
+              roomClass: 'sgl',
+              roomName: 'シングルルーム',
+              planId: 5000006,
+              planName: '【素泊まり】スタンダードプラン',
+              pointRate: 1,
+              withDinnerFlag: 0,
+              dinnerSelectFlag: 0,
+              withBreakfastFlag: 0,
+              breakfastSelectFlag: 0,
+              payment: '1',
+              reserveUrl: 'https://example.com/reserve/100005/sgl/5000006',
+              salesformFlag: 0,
+            },
+          },
+        ],
+      },
+    ],
+  ],
+};
+
 describe('getHotelsTool', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -308,5 +494,83 @@ describe('getHotelsTool', () => {
 
     const result = await getHotelsTool.handler(request);
     expect(result).toEqual({ error: 'APIリクエストに失敗しました' });
+  });
+
+  it('maxPriceパラメーターが指定されている場合、それを使用すること', async () => {
+    const customMaxPrice = 10000;
+    const mockApiResponse = {
+      data: mockApiResponseData,
+    };
+
+    mockedAxios.get.mockResolvedValueOnce(mockApiResponse);
+
+    const request = {
+      parameters: {
+        checkIn: '2023-12-01',
+        checkOut: '2023-12-02',
+        maxPrice: customMaxPrice,
+      },
+    };
+
+    const result = await getHotelsTool.handler(request);
+
+    // 金額上限でフィルタリングされていることを確認
+    // モックデータでは、テストホテル東京の最安料金は8000円、テストホテル大阪の最安料金は7000円
+    // どちらも10000円以下なので、両方とも結果に含まれるはず
+    expect(result.result?.hotels.length).toBe(2);
+  });
+
+  it('maxPriceパラメーターが無効な場合、エラーを返すこと', async () => {
+    const request = {
+      parameters: {
+        checkIn: '2023-12-01',
+        checkOut: '2023-12-02',
+        maxPrice: -1000, // 負の値は無効
+      },
+    };
+
+    const result = await getHotelsTool.handler(request);
+    expect(result).toEqual({ error: '上限金額は0より大きい値で指定してください。' });
+  });
+
+  it('除外ホテルタイプのフィルタリングが機能すること', async () => {
+    const mockApiResponse = {
+      data: excludedHotelMockData,
+    };
+
+    mockedAxios.get.mockResolvedValueOnce(mockApiResponse);
+
+    const request = {
+      parameters: {
+        checkIn: '2023-12-01',
+        checkOut: '2023-12-02',
+      },
+    };
+
+    const result = await getHotelsTool.handler(request);
+
+    // カプセルホテルは除外されるため、結果は0件になるはず
+    expect(result.result?.hotels.length).toBe(0);
+  });
+
+  it('優先ホテルチェーンが優先されること', async () => {
+    const mockApiResponse = {
+      data: preferredChainMockData,
+    };
+
+    mockedAxios.get.mockResolvedValueOnce(mockApiResponse);
+
+    const request = {
+      parameters: {
+        checkIn: '2023-12-01',
+        checkOut: '2023-12-02',
+      },
+    };
+
+    const result = await getHotelsTool.handler(request);
+
+    // ルートインホテルが優先されるため、最初のホテルはルートインになるはず
+    expect(result.result?.hotels.length).toBe(2);
+    expect(result.result?.hotels[0].hotelBasicInfo.hotelName).toBe('ルートイン東京');
   });
 });

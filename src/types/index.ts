@@ -4,6 +4,21 @@ export interface HotelQueryParams {
   latitude?: number;
   longitude?: number;
   radiusKm?: number;
+  maxPrice?: number; // 1泊あたりの最大金額（デフォルト: 15000円）
+}
+
+// ホテルチェーン情報
+export interface HotelChain {
+  name: string; // チェーン名
+  keywords: string[]; // 判定用キーワード
+  priority: number; // 優先度（数値が小さいほど優先）
+}
+
+// 部屋タイプ情報
+export interface RoomTypePreference {
+  type: string; // 部屋タイプ識別子
+  keywords: string[]; // 判定用キーワード
+  priority: number; // 優先度（数値が小さいほど優先）
 }
 
 // ホテルの基本情報
