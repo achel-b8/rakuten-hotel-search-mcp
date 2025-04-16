@@ -53,7 +53,7 @@ describe('RakutenHotelServer', () => {
     // Serverコンストラクタが正しいパラメータで呼ばれたことを確認
     expect(Server).toHaveBeenCalledWith(
       {
-        name: 'rakuten-hotel-mcp',
+        name: 'rakuten-hotel',
         version: '0.1.0',
       },
       {

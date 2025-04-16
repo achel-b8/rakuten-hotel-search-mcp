@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { HotelQueryParams, HotelsResponse, Hotel, RakutenApiResponse } from '../../types/index';
+import { 
+  HotelQueryParams, 
+  HotelsResponse, 
+  Hotel, 
+  RakutenApiResponse, 
+  RoomInfo, 
+  HotelBasicInfo 
+} from '../../types/index.js';
 
 // 戻り値の型を明示的に定義
 type ToolResponse = {
@@ -175,31 +182,47 @@ function buildRequestParams(
 function formatResponse(data: RakutenApiResponse): HotelsResponse {
   const hotels: Hotel[] = [];
 
+  // デバッグログ
+  console.error('API Response:', JSON.stringify(data, null, 2));
+
   if (data.hotels && Array.isArray(data.hotels)) {
-    data.hotels.forEach((hotelData) => {
-      if (hotelData.hotel && Array.isArray(hotelData.hotel) && hotelData.hotel.length > 0) {
-        const basicInfo = hotelData.hotel[0].hotelBasicInfo;
-        if (basicInfo) {
+    data.hotels.forEach((hotelGroup) => {
+      // hotelGroupは配列
+      if (Array.isArray(hotelGroup) && hotelGroup.length > 0) {
+        let hotelBasicInfo: HotelBasicInfo | undefined;
+        const roomInfoList: RoomInfo[] = [];
+
+        // ホテルグループの各要素を処理
+        hotelGroup.forEach((item) => {
+          // ホテル基本情報の処理
+          if (item.hotelBasicInfo) {
+            hotelBasicInfo = item.hotelBasicInfo;
+          }
+          
+          // 部屋情報の処理
+          if (item.roomInfo && Array.isArray(item.roomInfo)) {
+            roomInfoList.push(...item.roomInfo);
+          }
+        });
+
+        // ホテル基本情報が存在する場合のみホテルを追加
+        if (hotelBasicInfo) {
           hotels.push({
-            hotelNo: basicInfo.hotelNo,
-            hotelName: basicInfo.hotelName,
-            hotelInformationUrl: basicInfo.hotelInformationUrl,
-            hotelMinCharge: basicInfo.hotelMinCharge,
-            address1: basicInfo.address1,
-            address2: basicInfo.address2,
-            telephoneNo: basicInfo.telephoneNo,
-            access: basicInfo.access,
-            hotelImageUrl: basicInfo.hotelImageUrl,
-            reviewCount: basicInfo.reviewCount,
-            reviewAverage: basicInfo.reviewAverage,
-            hotelSpecial: basicInfo.hotelSpecial,
+            hotelBasicInfo,
+            roomInfoList
           });
         }
       }
     });
   }
 
-  return { hotels };
+  // デバッグログ
+  console.error('Formatted Response:', JSON.stringify({ hotels, pagingInfo: data.pagingInfo }, null, 2));
+  
+  return { 
+    hotels,
+    pagingInfo: data.pagingInfo
+  };
 }
 
 export default getHotelsTool;

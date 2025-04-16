@@ -22,7 +22,7 @@ class RakutenHotelServer {
     // MCPサーバーの初期化
     this.server = new Server(
       {
-        name: 'rakuten-hotel-mcp',
+        name: 'rakuten-hotel',
         version: '0.1.0',
       },
       {
@@ -37,6 +37,9 @@ class RakutenHotelServer {
 
     // エラーハンドリング
     this.server.onerror = (error) => console.error('[MCP Error]', error);
+    
+    // デバッグログを追加
+    process.env.DEBUG = 'mcp:*';
     process.on('SIGINT', async () => {
       await this.server.close();
       process.exit(0);
@@ -79,7 +82,7 @@ class RakutenHotelServer {
   }
 
   async run() {
-    const transport = new StdioServerTransport();
+    const transport = new StdioServerTransport(process.stdin, process.stdout);
     await this.server.connect(transport);
     console.error('楽天ホテルMCPサーバーが起動しました');
   }
