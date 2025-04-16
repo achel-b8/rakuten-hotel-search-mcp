@@ -2,11 +2,10 @@
 
 ## 1. 概要
 楽天トラベルの空室検索APIを利用して周辺ホテルの空室情報を取得するMCPサーバーを構築するプラン。  
-本MCPサーバーはTypeScript + Express + MCP SDKで作成し、ViteやESLint, Prettier等を使用する。
+本MCPサーバーはTypeScript + MCP SDKで作成し、ViteやESLint, Prettier等を使用する。
 
 ## 2. 軸となる技術スタック
 - 言語: TypeScript  
-- Webフレームワーク: Express  
 - MCP SDK: @modelcontextprotocol/sdk  
 - テスト: Vitest  
 - 静的解析: ESLint  
