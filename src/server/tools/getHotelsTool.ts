@@ -8,10 +8,13 @@ interface Tool {
   parameters: {
     type: string;
     required: string[];
-    properties: Record<string, {
-      type: string;
-      description: string;
-    }>;
+    properties: Record<
+      string,
+      {
+        type: string;
+        description: string;
+      }
+    >;
   };
   handler: (request: { parameters: any }) => Promise<any>;
 }
@@ -22,7 +25,8 @@ const DEFAULT_LATITUDE = 35.6994856;
 const DEFAULT_LONGITUDE = 139.7532791;
 const DEFAULT_RADIUS_KM = 2;
 
-const RAKUTEN_API_ENDPOINT = 'https://app.rakuten.co.jp/services/api/Travel/VacantHotelSearch/20170426';
+const RAKUTEN_API_ENDPOINT =
+  'https://app.rakuten.co.jp/services/api/Travel/VacantHotelSearch/20170426';
 
 /**
  * getHotelsTool - 楽天トラベル空室検索APIを使用してホテル情報を取得するツール
@@ -111,15 +115,24 @@ function validateParams(params: HotelQueryParams): void {
     throw new Error('チェックアウト日はチェックイン日より後である必要があります。');
   }
 
-  if (params.latitude !== undefined && (isNaN(params.latitude) || params.latitude < -90 || params.latitude > 90)) {
+  if (
+    params.latitude !== undefined &&
+    (isNaN(params.latitude) || params.latitude < -90 || params.latitude > 90)
+  ) {
     throw new Error('緯度は-90から90の間で指定してください。');
   }
 
-  if (params.longitude !== undefined && (isNaN(params.longitude) || params.longitude < -180 || params.longitude > 180)) {
+  if (
+    params.longitude !== undefined &&
+    (isNaN(params.longitude) || params.longitude < -180 || params.longitude > 180)
+  ) {
     throw new Error('経度は-180から180の間で指定してください。');
   }
 
-  if (params.radiusKm !== undefined && (isNaN(params.radiusKm) || params.radiusKm <= 0 || params.radiusKm > 3)) {
+  if (
+    params.radiusKm !== undefined &&
+    (isNaN(params.radiusKm) || params.radiusKm <= 0 || params.radiusKm > 3)
+  ) {
     throw new Error('検索半径は0.1から3.0kmの間で指定してください。');
   }
 }
@@ -127,7 +140,11 @@ function validateParams(params: HotelQueryParams): void {
 /**
  * APIリクエストパラメータの構築
  */
-function buildRequestParams(params: HotelQueryParams, applicationId: string, affiliateId?: string): Record<string, string | number> {
+function buildRequestParams(
+  params: HotelQueryParams,
+  applicationId: string,
+  affiliateId?: string
+): Record<string, string | number> {
   const requestParams: Record<string, string | number> = {
     applicationId: applicationId,
     formatVersion: 2,

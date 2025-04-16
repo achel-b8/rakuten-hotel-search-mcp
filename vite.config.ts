@@ -6,7 +6,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/server/index.ts'),
       name: 'rakuten-hotel-mcp',
-      fileName: 'index'
+      fileName: 'index',
     },
     rollupOptions: {
       external: ['express', '@modelcontextprotocol/sdk', 'axios', 'dotenv'],
@@ -15,10 +15,10 @@ export default defineConfig({
           express: 'express',
           '@modelcontextprotocol/sdk': 'mcpSdk',
           axios: 'axios',
-          dotenv: 'dotenv'
-        }
-      }
+          dotenv: 'dotenv',
+        },
+      },
     },
-    outDir: 'build'
-  }
+    outDir: 'build',
+  },
 });

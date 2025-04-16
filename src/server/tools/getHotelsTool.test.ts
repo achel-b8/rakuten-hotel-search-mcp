@@ -40,9 +40,9 @@ describe('getHotelsTool', () => {
                   reviewCount: 100,
                   reviewAverage: 4.5,
                   hotelSpecial: 'テスト特徴',
-                }
-              }
-            ]
+                },
+              },
+            ],
           },
         ],
       },
@@ -157,7 +157,9 @@ describe('getHotelsTool', () => {
     };
 
     const result = await getHotelsTool.handler(request);
-    expect(result).toEqual({ error: 'チェックアウト日はチェックイン日より後である必要があります。' });
+    expect(result).toEqual({
+      error: 'チェックアウト日はチェックイン日より後である必要があります。',
+    });
   });
 
   it('APIリクエストが失敗した場合、エラーを返すこと', async () => {

@@ -7,18 +7,18 @@ export interface HotelQueryParams {
 }
 
 export interface Hotel {
-  hotelNo: number;          // 施設番号
-  hotelName: string;        // 施設名称
+  hotelNo: number; // 施設番号
+  hotelName: string; // 施設名称
   hotelInformationUrl: string; // 施設情報ページURL
-  hotelMinCharge: number;   // 最安料金
-  address1: string;         // 住所1
-  address2: string;         // 住所2
-  telephoneNo: string;      // 施設電話番号
-  access: string;           // 施設へのアクセス
-  hotelImageUrl?: string;   // 施設画像URL
-  reviewCount?: number;     // 投稿件数
-  reviewAverage?: number;   // 総合評価
-  hotelSpecial?: string;    // 施設特色
+  hotelMinCharge: number; // 最安料金
+  address1: string; // 住所1
+  address2: string; // 住所2
+  telephoneNo: string; // 施設電話番号
+  access: string; // 施設へのアクセス
+  hotelImageUrl?: string; // 施設画像URL
+  reviewCount?: number; // 投稿件数
+  reviewAverage?: number; // 総合評価
+  hotelSpecial?: string; // 施設特色
 }
 
 export interface RakutenApiResponse {
